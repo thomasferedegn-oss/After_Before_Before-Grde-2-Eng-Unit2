@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ethiopian Kids Day Explorer - Days of the Week</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Bubblegum Sans & Noto Sans Ethiopic -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bubblegum+Sans&family=Fredoka:wght@400;600;700&family=Noto+Sans+Ethiopic:wght@500;700;900&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+  <!-- FontAwesome for playful icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Canvas Confetti for rewards -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <style>
+    body {
+      font-family: 'Fredoka', 'Quicksand', sans-serif;
+      background: radial-gradient(circle at 10% 20%, #eff6ff 0%, #fdf2f8 90%);
+      user-select: none;
+    }
+    .font-ethiopic {
+      font-family: 'Noto Sans Ethiopic', sans-serif;
+    }
+    .fun-title {
+      font-family: 'Bubblegum Sans', cursive;
+    }
+    .bouncy-hover {
+      transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .bouncy-hover:hover {
+      transform: translateY(-4px) scale(1.03);
+    }
+    .bouncy-hover:active {
+      transform: translateY(1px) scale(0.97);
+    }
+    @keyframes gentleWobble {
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(-2deg); }
+      75% { transform: rotate(2deg); }
+    }
+    .wobble-once {
+      animation: gentleWobble 0.5s ease-in-out;
+    }
+    .pulse-ring {
+      box-shadow: 0 0 0 0 rgba(234, 179, 8, 0.7);
+      animation: pulsing 1.8s infinite cubic-bezier(0.66, 0, 0, 1);
+    }
+    @keyframes pulsing {
+      to {
+        box-shadow: 0 0 0 20px rgba(234, 179, 8, 0);
+      }
+    }
+    /* Hide scrollbars for slick look */
+    ::-webkit-scrollbar {
+      display: none;
+    }
+  </style>
+</head>
+<body class="min-h-screen text-slate-800 flex flex-col justify-between">
+
+  <!-- Header & British Voice Narrator Status Bar -->
+  <header class="w-full bg-white/90 backdrop-blur-md shadow-sm border-b border-amber-100 sticky top-0 z-40">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between flex-wrap gap-3">
+      <!-- Title & Ethiopian Accent Motif -->
+      <div class="flex items-center space-x-3">
+        <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-amber-400 via-emerald-400 to-rose-400 p-0.5 shadow-md flex items-center justify-center">
+          <div class="w-full h-full bg-white rounded-2xl flex items-center justify-center text-xl">
+            ☀️
+          </div>
+        </div>
+        <div>
+          <h1 class="text-xl md:text-2xl font-bold fun-title tracking-wide text-indigo-900 flex items-center gap-2">
+            Ethiopian Days Quest <span class="text-xs bg-amber-100 text-amber-800 font-sans px-2 py-0.5 rounded-full font-bold">የሳምንቱ ቀናት</span>
+          </h1>
+          <p class="text-xs text-slate-500 font-medium">Learn English & Amharic Days with Lady Eleanor 🇬🇧</p>
+        </div>
+      </div>
+
+      <!-- Golden Voice Narrator Indicator & Controls -->
+      <div class="flex items-center gap-3">
+        <button id="speaker-test-btn" onclick="narrateIntroduction()" class="flex items-center gap-2 px-3 py-1.5 bg-amber-50 hover:bg-amber-100 border border-amber-300 text-amber-900 rounded-full text-xs font-semibold shadow-sm transition bouncy-hover">
+          <span class="relative flex h-2.5 w-2.5">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-amber-500"></span>
+          </span>
+          <i class="fa-solid fa-volume-high text-amber-600"></i>
+          <span>Meet Lady Eleanor</span>
+        </button>
+
+        <div class="flex items-center bg-slate-100 rounded-full p-1 border border-slate-200">
+          <button id="audio-toggle" onclick="toggleAudio()" class="w-8 h-8 rounded-full bg-emerald-500 text-white flex items-center justify-center text-xs shadow transition">
+            <i class="fa-solid fa-volume-up"></i>
+          </button>
+        </div>
+
+        <!-- Star Score Counter -->
+        <div class="flex items-center gap-1.5 bg-gradient-to-r from-amber-500 to-yellow-400 text-white px-3.5 py-1.5 rounded-full font-bold text-sm shadow-md">
+          <i class="fa-solid fa-star text-yellow-100 animate-pulse"></i>
+          <span id="star-count">0</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation Mode Tabs -->
+  <div class="max-w-4xl mx-auto px-4 mt-5 w-full">
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 bg-slate-200/60 p-1.5 rounded-2xl backdrop-blur">
+      <button onclick="switchTab('explore')" id="tab-explore" class="tab-btn py-2.5 px-3 rounded-xl font-bold text-sm transition flex items-center justify-center gap-2 bg-white text-indigo-600 shadow-sm">
+        <i class="fa-solid fa-compass"></i>
+        <span>1. Discover</span>
+      </button>
+      <button onclick="switchTab('sequence')" id="tab-sequence" class="tab-btn py-2.5 px-3 rounded-xl font-bold text-sm transition flex items-center justify-center gap-2 text-slate-600 hover:text-indigo-600">
+        <i class="fa-solid fa-arrows-split-up-and-left"></i>
+        <span>2. Before/After</span>
+      </button>
+      <button onclick="switchTab('spelling')" id="tab-spelling" class="tab-btn py-2.5 px-3 rounded-xl font-bold text-sm transition flex items-center justify-center gap-2 text-slate-600 hover:text-indigo-600">
+        <i class="fa-solid fa-spell-check"></i>
+        <span>3. Spell & Build</span>
+      </button>
+      <button onclick="switchTab('quiz')" id="tab-quiz" class="tab-btn py-2.5 px-3 rounded-xl font-bold text-sm transition flex items-center justify-center gap-2 text-slate-600 hover:text-indigo-600">
+        <i class="fa-solid fa-trophy"></i>
+        <span>4. Master Challenge</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Interactive Playground Container -->
+  <main class="max-w-5xl mx-auto px-4 py-5 w-full flex-1">
+
+    <!-- ============================================== -->
+    <!-- SECTION 1: DISCOVER & LISTEN (Bilingual Cards) -->
+    <!-- ============================================== -->
+    <section id="view-explore" class="space-y-6">
+      <div class="text-center space-y-1">
+        <h2 class="text-2xl md:text-3xl font-extrabold text-slate-800 fun-title">
+          Explore The Seven Days <span class="text-indigo-600">ሰባቱ የሳምንቱ ቀናት</span>
+        </h2>
+        <p class="text-slate-600 text-sm max-w-lg mx-auto">
+          Tap any day to hear its proper English pronunciation in Lady Eleanor's golden British accent, alongside its Amharic Fidel spelling and meaning!
+        </p>
+      </div>
+
+      <!-- 7 Days Grid with Ethiopian Traditional Inspired Colors -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4" id="cards-container">
+        <!-- Injected via JavaScript for rich audio & interaction -->
+      </div>
+
+      <!-- Quick Sequence Helper Banner -->
+      <div class="bg-gradient-to-r from-emerald-50 via-teal-50 to-blue-50 border border-emerald-200 rounded-3xl p-5 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-4">
+          <div class="w-14 h-14 rounded-2xl bg-emerald-500 text-white flex items-center justify-center text-2xl shadow-md">
+            <i class="fa-solid fa-calendar-week"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-emerald-950 text-base md:text-lg">The Week Cycle (የሳምንት ዑደት)</h3>
+            <p class="text-xs md:text-sm text-emerald-800">
+              Monday is <b class="font-ethiopic">ሰኞ</b>, Sunday is <b class="font-ethiopic">እሑድ</b>. In Ethiopia, the work week begins on Monday!
+            </p>
+          </div>
+        </div>
+        <button onclick="speakWeeklyRhyme()" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs md:text-sm font-bold rounded-xl shadow-md flex items-center gap-2 bouncy-hover whitespace-nowrap">
+          <i class="fa-solid fa-music"></i>
+          <span>Recite The 7 Days Song</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- ============================================== -->
+    <!-- SECTION 2: BEFORE, AFTER & BETWEEN GAME       -->
+    <!-- ============================================== -->
+    <section id="view-sequence" class="hidden space-y-6">
+      <div class="max-w-2xl mx-auto bg-white rounded-3xl p-6 sm:p-8 shadow-xl border border-slate-100 text-center relative overflow-hidden">
+        
+        <!-- Header badge -->
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-indigo-50 text-indigo-700 border border-indigo-200 mb-4">
+          <i class="fa-solid fa-arrows-rotate"></i>
+          <span id="seq-mode-badge">Which Day Comes After?</span>
+        </div>
+
+        <!-- Question Prompt Banner -->
+        <div class="space-y-2 mb-6">
+          <h2 id="seq-question-en" class="text-2xl sm:text-3xl font-extrabold text-slate-800 leading-snug">
+            What day comes <span class="text-rose-500 underline decoration-wavy">AFTER</span> Wednesday?
+          </h2>
+          <p id="seq-question-am" class="text-base sm:text-lg font-ethiopic text-slate-500 font-bold">
+            ከሮብ በኋላ የሚመጣው ቀን የትኛው ነው?
+          </p>
+        </div>
+
+        <!-- Visual Sequence Demonstration (3 Boxes) -->
+        <div class="flex items-center justify-center gap-2 sm:gap-4 my-8">
+          <!-- Box 1 -->
+          <div id="seq-slot-1" class="w-24 sm:w-28 h-28 sm:h-32 rounded-2xl bg-slate-100 border-2 border-slate-200 flex flex-col items-center justify-center p-2 shadow-inner transition-all">
+            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Before</span>
+            <span class="slot-en text-sm sm:text-base font-extrabold text-slate-700 mt-1">Tuesday</span>
+            <span class="slot-am text-xs font-ethiopic text-slate-500 font-bold">ማክሰኞ</span>
+          </div>
+
+          <!-- Arrow -->
+          <i class="fa-solid fa-arrow-right text-slate-300 text-lg sm:text-xl"></i>
+
+          <!-- Box 2 (Target/Pivot) -->
+          <div id="seq-slot-2" class="w-24 sm:w-28 h-28 sm:h-32 rounded-2xl bg-amber-50 border-2 border-amber-400 flex flex-col items-center justify-center p-2 shadow-md relative">
+            <span class="absolute -top-2.5 px-2 bg-amber-500 text-white text-[10px] font-bold rounded-full">GIVEN</span>
+            <span class="slot-en text-sm sm:text-base font-extrabold text-amber-900 mt-1">Wednesday</span>
+            <span class="slot-am text-xs font-ethiopic text-amber-700 font-bold">ረቡዕ</span>
+          </div>
+
+          <!-- Arrow -->
+          <i class="fa-solid fa-arrow-right text-slate-300 text-lg sm:text-xl"></i>
+
+          <!-- Box 3 -->
+          <div id="seq-slot-3" class="w-24 sm:w-28 h-28 sm:h-32 rounded-2xl border-2 border-dashed border-indigo-400 bg-indigo-50/50 flex flex-col items-center justify-center p-2 text-indigo-500 shadow-sm animate-pulse">
+            <span class="text-xs font-bold uppercase tracking-wider">Target</span>
+            <span class="slot-en text-2xl font-black">?</span>
+            <span class="slot-am text-xs font-ethiopic font-bold">ምን ይመጣል?</span>
+          </div>
+        </div>
+
+        <!-- Lady Eleanor Voice Prompt Button -->
+        <button onclick="readCurrentSeqQuestion()" class="mb-6 inline-flex items-center gap-2 px-4 py-2 bg-purple-50 hover:bg-purple-100 text-purple-700 rounded-full text-xs font-semibold border border-purple-200 transition bouncy-hover">
+          <i class="fa-solid fa-ear-listen"></i>
+          <span>Hear Lady Eleanor Ask The Question</span>
+        </button>
+
+        <!-- Choice Options Grid -->
+        <div id="seq-options" class="grid grid-cols-2 gap-3 sm:gap-4 max-w-md mx-auto">
+          <!-- Dynamically populated options -->
+        </div>
+
+        <!-- Next / Feedback area -->
+        <div id="seq-feedback" class="mt-6 min-h-[3rem] flex items-center justify-center">
+          <p class="text-xs text-slate-400 font-medium">Select the correct day from the choices above!</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================== -->
+    <!-- SECTION 3: SPELL & BUILD AMHARIC + ENGLISH    -->
+    <!-- ============================================== -->
+    <section id="view-spelling" class="hidden space-y-6">
+      <div class="max-w-2xl mx-auto bg-white rounded-3xl p-6 sm:p-8 shadow-xl border border-slate-100 text-center">
+        
+        <!-- Header Info -->
+        <div class="flex items-center justify-between border-b pb-4 mb-4">
+          <div class="text-left">
+            <span class="text-xs uppercase font-bold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
+              Spelling Bee & Amharic Match
+            </span>
+            <h2 class="text-xl sm:text-2xl font-extrabold text-slate-800 mt-1">Spell the English Day</h2>
+          </div>
+          <!-- Skip/Next button -->
+          <button onclick="generateSpellingChallenge()" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg font-bold flex items-center gap-1 transition">
+            <span>Next Day</span>
+            <i class="fa-solid fa-forward"></i>
+          </button>
+        </div>
+
+        <!-- Amharic Clue Card -->
+        <div class="bg-gradient-to-r from-amber-50 to-orange-50 border-2 border-amber-200 rounded-2xl p-4 mb-6 flex items-center justify-around">
+          <div>
+            <span class="text-[11px] font-bold uppercase text-amber-700 tracking-wider">Amharic Day</span>
+            <p id="spell-amharic-fidel" class="text-3xl sm:text-4xl font-extrabold font-ethiopic text-amber-950 mt-1">ሰኞ</p>
+            <p id="spell-amharic-phonetic" class="text-xs font-semibold text-amber-700 italic">"Segno"</p>
+          </div>
+          <div class="h-12 w-px bg-amber-200"></div>
+          <div>
+            <span class="text-[11px] font-bold uppercase text-amber-700 tracking-wider">Audio Pronunciation</span>
+            <button onclick="speakSpellingClue()" class="mt-1 block px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-xs font-bold shadow bouncy-hover">
+              <i class="fa-solid fa-volume-high"></i> Listen Clue
+            </button>
+          </div>
+        </div>
+
+        <!-- Assembled Letter Slots -->
+        <div class="mb-6">
+          <p class="text-xs text-slate-400 font-semibold mb-2">TAP SCRAMBLED LETTERS TO FILL THE SLOTS:</p>
+          <div id="spelling-slots" class="flex flex-wrap justify-center gap-1.5 sm:gap-2 min-h-[50px] p-2 bg-slate-50 border border-slate-200 rounded-2xl">
+            <!-- Assembled letter boxes -->
+          </div>
+        </div>
+
+        <!-- Scrambled Letter Tiles -->
+        <div class="mb-6">
+          <div id="spelling-pool" class="flex flex-wrap justify-center gap-2">
+            <!-- Scrambled buttons -->
+          </div>
+        </div>
+
+        <!-- Control Buttons -->
+        <div class="flex items-center justify-center gap-3">
+          <button onclick="clearSpellingAnswer()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl transition bouncy-hover flex items-center gap-1.5">
+            <i class="fa-solid fa-rotate-left"></i> Reset
+          </button>
+          <button onclick="checkSpellingAnswer()" class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold rounded-xl shadow-md transition bouncy-hover flex items-center gap-2">
+            <i class="fa-solid fa-circle-check"></i> Check Spelling
+          </button>
+        </div>
+
+        <!-- Feedback alert -->
+        <div id="spelling-msg" class="mt-4 min-h-[2rem] text-sm font-bold"></div>
+      </div>
+    </section>
+
+    <!-- ============================================== -->
+    <!-- SECTION 4: MASTER QUIZ (Between, Before, After)-->
+    <!-- ============================================== -->
+    <section id="view-quiz" class="hidden space-y-6">
+      <div class="max-w-2xl mx-auto bg-white rounded-3xl p-6 sm:p-8 shadow-xl border border-slate-100 text-center">
+        
+        <div class="flex items-center justify-between mb-4 border-b pb-3">
+          <div class="text-left">
+            <span class="text-xs uppercase font-bold text-purple-600 bg-purple-50 px-2.5 py-1 rounded-full border border-purple-200">
+              Championship Quiz
+            </span>
+            <h2 class="text-xl sm:text-2xl font-black text-slate-800 mt-1">Ethiopian Days Star Cup</h2>
+          </div>
+          <div class="text-right">
+            <span class="text-xs text-slate-400 font-bold block">Question</span>
+            <span id="quiz-progress" class="text-base font-black text-indigo-600">1 / 5</span>
+          </div>
+        </div>
+
+        <!-- Quiz Prompt Card -->
+        <div class="bg-indigo-900 text-white rounded-3xl p-6 shadow-inner my-6 relative overflow-hidden">
+          <div class="absolute -right-6 -bottom-6 opacity-10 text-9xl">
+            <i class="fa-solid fa-graduation-cap"></i>
+          </div>
+
+          <span id="quiz-tag" class="px-3 py-1 bg-white/20 rounded-full text-xs font-bold tracking-wide uppercase">
+            BETWEEN QUESTION
+          </span>
+          <h3 id="quiz-prompt-en" class="text-xl sm:text-2xl font-bold mt-3 mb-1">
+            Which day comes <span class="text-yellow-300 underline">BETWEEN</span> Friday and Sunday?
+          </h3>
+          <p id="quiz-prompt-am" class="font-ethiopic text-indigo-200 text-base font-semibold">
+            በአርብ እና በእሑድ መካከል የሚመጣው ቀን የትኛው ነው?
+          </p>
+
+          <button onclick="readQuizQuestion()" class="mt-4 px-3 py-1.5 bg-yellow-400 hover:bg-yellow-300 text-yellow-950 font-bold rounded-xl text-xs flex items-center gap-1.5 mx-auto bouncy-hover shadow">
+            <i class="fa-solid fa-volume-high"></i> Read for Me
+          </button>
+        </div>
+
+        <!-- Quiz Choice Buttons -->
+        <div id="quiz-options-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-lg mx-auto">
+          <!-- Populated in JS -->
+        </div>
+
+        <div id="quiz-feedback-box" class="mt-6 min-h-[3rem]"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer Info & Traditional Ethiopian Days Reference -->
+  <footer class="w-full bg-slate-900 text-slate-400 text-xs py-5 px-4 mt-8 border-t border-slate-800">
+    <div class="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+      <div>
+        <p class="font-semibold text-slate-200">Ethiopian Children English-Amharic Week Academy</p>
+        <p class="text-slate-500">Designed with authentic Ge'ez Fidel & Queen's British English pronunciation.</p>
+      </div>
+      <div class="flex items-center gap-3">
+        <span class="inline-flex items-center gap-1 text-amber-400 font-bold">
+          <i class="fa-solid fa-crown text-xs"></i> Lady Eleanor (British Voice)
+        </span>
+        <span>•</span>
+        <span class="text-slate-400">100% Kid Friendly</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ============================================== -->
+  <!-- JAVASCRIPT LOGIC, AUDIO ENGINE & GAME STATE    -->
+  <!-- ============================================== -->
+  <script>
+    /* -------------------------------------------------------------
+       1. DATA STRUCTURE: The 7 Days with Amharic & Details
+       ------------------------------------------------------------- */
+    const DAYS_DATA = [
+      {
+        index: 0,
+        en: "Monday",
+        am: "ሰኞ",
+        phonetic: "Segno",
+        meaning: "First work day of the Ethiopian week",
+        icon: "fa-seedling",
+        color: "from-blue-500 to-indigo-600",
+        bgLight: "bg-blue-50",
+        borderLight: "border-blue-200",
+        textColor: "text-blue-900"
+      },
+      {
+        index: 1,
+        en: "Tuesday",
+        am: "ማክሰኞ",
+        phonetic: "Maksenyo",
+        meaning: "Second day of the week",
+        icon: "fa-sun",
+        color: "from-amber-500 to-yellow-600",
+        bgLight: "bg-amber-50",
+        borderLight: "border-amber-200",
+        textColor: "text-amber-900"
+      },
+      {
+        index: 2,
+        en: "Wednesday",
+        am: "ረቡዕ",
+        phonetic: "Rebu / Rob",
+        meaning: "Midweek day (Traditional fast day in Ethiopia)",
+        icon: "fa-cloud-sun",
+        color: "from-emerald-500 to-teal-600",
+        bgLight: "bg-emerald-50",
+        borderLight: "border-emerald-200",
+        textColor: "text-emerald-900"
+      },
+      {
+        index: 3,
+        en: "Thursday",
+        am: "ሐሙስ",
+        phonetic: "Hamus",
+        meaning: "The fifth day counting from Sunday",
+        icon: "fa-book-open",
+        color: "from-purple-500 to-violet-600",
+        bgLight: "bg-purple-50",
+        borderLight: "border-purple-200",
+        textColor: "text-purple-900"
+      },
+      {
+        index: 4,
+        en: "Friday",
+        am: "ዓርብ",
+        phonetic: "Arb",
+        meaning: "Traditional day of preparation and prayer",
+        icon: "fa-feather",
+        color: "from-rose-500 to-pink-600",
+        bgLight: "bg-rose-50",
+        borderLight: "border-rose-200",
+        textColor: "text-rose-900"
+      },
+      {
+        index: 5,
+        en: "Saturday",
+        am: "ቅዳሜ",
+        phonetic: "Qidame",
+        meaning: "Weekend market day across Ethiopia",
+        icon: "fa-store",
+        color: "from-cyan-500 to-blue-600",
+        bgLight: "bg-cyan-50",
+        borderLight: "border-cyan-200",
+        textColor: "text-cyan-900"
+      },
+      {
+        index: 6,
+        en: "Sunday",
+        am: "እሑድ",
+        phonetic: "Ehud",
+        meaning: "Rest and family gathering day",
+        icon: "fa-heart",
+        color: "from-orange-500 to-red-500",
+        bgLight: "bg-orange-50",
+        borderLight: "border-orange-200",
+        textColor: "text-orange-900"
+      }
+    ];
+
+    /* -------------------------------------------------------------
+       2. GOLDEN BRITISH WOMAN SPEECH SYNTHESIS ENGINE
+       ------------------------------------------------------------- */
+    let audioEnabled = true;
+    let stars = 0;
+    let britishVoice = null;
+
+    function initSpeechEngine() {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.onvoiceschanged = () => {
+          selectBritishVoice();
+        };
+        selectBritishVoice();
+      }
+    }
+
+    function selectBritishVoice() {
+      if (!('speechSynthesis' in window)) return;
+      const voices = window.speechSynthesis.getVoices();
+      
+      // Look for classic high-quality British female voices (e.g. Google UK English Female, Libby, Martha, Fiona, en-GB)
+      const gbFemale = voices.find(v => 
+        (v.lang === 'en-GB' || v.lang === 'en_GB') && 
+        (v.name.toLowerCase().includes('female') || 
+         v.name.toLowerCase().includes('libby') || 
+         v.name.toLowerCase().includes('sonia') || 
+         v.name.toLowerCase().includes('martha') || 
+         v.name.toLowerCase().includes('serena') ||
+         v.name.toLowerCase().includes('hazel') ||
+         v.name.toLowerCase().includes('natural') ||
+         v.name.toLowerCase().includes('google uk english female'))
+      );
+
+      const anyGB = voices.find(v => v.lang === 'en-GB' || v.lang === 'en_GB');
+      const anyFemale = voices.find(v => v.name.toLowerCase().includes('female'));
+
+      britishVoice = gbFemale || anyGB || anyFemale || voices[0];
+    }
+
+    // Queen's Golden Voice narration wrapper with warm cadence and child-friendly inflection
+    function speakBritish(text, options = {}) {
+      if (!audioEnabled || !('speechSynthesis' in window)) return;
+      window.speechSynthesis.cancel(); // Stop any pending speech
+
+      const utterance = new SpeechSynthesisUtterance(text);
+      if (britishVoice) {
+        utterance.voice = britishVoice;
+      }
+      utterance.lang = 'en-GB';
+      // Golden, lyrical, friendly tutor cadence
+      utterance.pitch = options.pitch || 1.15; // slightly higher & melodic for kids
+      utterance.rate = options.rate || 0.88;   // slow, crystal clear enunciation
+      utterance.volume = options.volume || 1.0;
+
+      window.speechSynthesis.speak(utterance);
+    }
+
+    function toggleAudio() {
+      audioEnabled = !audioEnabled;
+      const btn = document.getElementById('audio-toggle');
+      if (audioEnabled) {
+        btn.innerHTML = '<i class="fa-solid fa-volume-up"></i>';
+        btn.className = "w-8 h-8 rounded-full bg-emerald-500 text-white flex items-center justify-center text-xs shadow transition";
+        speakBritish("Sound enabled! Ready to learn, little champions.");
+      } else {
+        btn.innerHTML = '<i class="fa-solid fa-volume-xmark"></i>';
+        btn.className = "w-8 h-8 rounded-full bg-rose-500 text-white flex items-center justify-center text-xs shadow transition";
+        window.speechSynthesis.cancel();
+      }
+    }
+
+    function narrateIntroduction() {
+      speakBritish("Hello lovely children of Ethiopia! I am Lady Eleanor, your British English tutor. Today we are going to learn the seven marvelous days of the week, how to spell them, and their beautiful Amharic names. Come along, let's explore!");
+    }
+
+    function speakWeeklyRhyme() {
+      speakBritish("Listen carefully to the seven glorious days! Monday is Segno. Tuesday is Maksenyo. Wednesday is Rob. Thursday is Hamus. Friday is Arb. Saturday is Qidame. And Sunday is Ehud! Splendid job!");
+    }
+
+    function addStar(amount = 1) {
+      stars += amount;
+      document.getElementById('star-count').innerText = stars;
+      confetti({
+        particleCount: 35,
+        spread: 60,
+        origin: { y: 0.7 }
+      });
+    }
+
+    /* -------------------------------------------------------------
+       3. NAVIGATION TABS
+       ------------------------------------------------------------- */
+    function switchTab(tab) {
+      ['explore', 'sequence', 'spelling', 'quiz'].forEach(t => {
+        document.getElementById(`view-${t}`).classList.add('hidden');
+        const b = document.getElementById(`tab-${t}`);
+        b.className = "tab-btn py-2.5 px-3 rounded-xl font-bold text-sm transition flex items-center justify-center gap-2 text-slate-600 hover:text-indigo-600";
+      });
+
+      document.getElementById(`view-${tab}`).classList.remove('hidden');
+      const activeBtn = document.getElementById(`tab-${tab}`);
+      activeBtn.className = "tab-btn py-2.5 px-3 rounded-xl font-bold text-sm transition flex items-center justify-center gap-2 bg-white text-indigo-600 shadow-sm";
+
+      if (tab === 'sequence') {
+        generateSequenceQuestion();
+      } else if (tab === 'spelling') {
+        generateSpellingChallenge();
+      } else if (tab === 'quiz') {
+        currentQuizIndex = 0;
+        loadQuizQuestion();
+      }
+    }
+
+    /* -------------------------------------------------------------
+       4. SECTION 1: DISCOVER DAYS (Dynamic generation)
+       ------------------------------------------------------------- */
+    function renderExploreCards() {
+      const container = document.getElementById('cards-container');
+      container.innerHTML = '';
+
+      DAYS_DATA.forEach(day => {
+        const card = document.createElement('div');
+        card.className = `bg-white rounded-3xl p-5 border-2 ${day.borderLight} shadow-sm hover:shadow-xl transition-all bouncy-hover cursor-pointer flex flex-col justify-between`;
+        card.onclick = () => {
+          speakBritish(`${day.en}! In Amharic, it is called ${day.phonetic}, written as ${day.am}. ${day.meaning}.`);
+        };
+
+        card.innerHTML = `
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <span class="w-10 h-10 rounded-2xl bg-gradient-to-tr ${day.color} text-white flex items-center justify-center text-sm shadow">
+                <i class="fa-solid ${day.icon}"></i>
+              </span>
+              <span class="text-xs font-bold text-slate-400 bg-slate-100 px-2.5 py-1 rounded-full">Day ${day.index + 1}</span>
+            </div>
+            <h3 class="text-2xl font-black text-slate-800 tracking-tight">${day.en}</h3>
+            <div class="mt-2 flex items-baseline gap-2">
+              <span class="font-ethiopic text-2xl font-black text-indigo-700">${day.am}</span>
+              <span class="text-xs font-semibold text-slate-500 italic">(${day.phonetic})</span>
+            </div>
+          </div>
+
+          <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-bold">
+            <span class="${day.textColor}">${day.meaning}</span>
+            <span class="text-indigo-500 hover:text-indigo-700">
+              <i class="fa-solid fa-volume-high"></i>
+            </span>
+          </div>
+        `;
+
+        container.appendChild(card);
+      });
+    }
+
+    /* -------------------------------------------------------------
+       5. SECTION 2: SEQUENCE GAME (Before / After / Between)
+       ------------------------------------------------------------- */
+    let currentSeq = {};
+
+    function generateSequenceQuestion() {
+      // Pick random mode: 0 -> "After", 1 -> "Before", 2 -> "Between"
+      const modes = ['after', 'before', 'between'];
+      const chosenMode = modes[Math.floor(Math.random() * modes.length)];
+
+      const feedbackEl = document.getElementById('seq-feedback');
+      feedbackEl.innerHTML = `<p class="text-xs text-slate-400 font-medium">Select the correct day from the choices above!</p>`;
+
+      if (chosenMode === 'after') {
+        const pivotIndex = Math.floor(Math.random() * 7);
+        const targetIndex = (pivotIndex + 1) % 7;
+        const prevIndex = (pivotIndex - 1 + 7) % 7;
+
+        currentSeq = {
+          mode: 'after',
+          pivot: DAYS_DATA[pivotIndex],
+          target: DAYS_DATA[targetIndex],
+          options: shuffleArray([
+            DAYS_DATA[targetIndex],
+            DAYS_DATA[(targetIndex + 1) % 7],
+            DAYS_DATA[(targetIndex + 3) % 7],
+            DAYS_DATA[(targetIndex + 4) % 7]
+          ])
+        };
+
+        document.getElementById('seq-mode-badge').innerText = "Which Day Comes AFTER?";
+        document.getElementById('seq-question-en').innerHTML = `What day comes <span class="text-rose-500 underline decoration-wavy">AFTER</span> ${currentSeq.pivot.en}?`;
+        document.getElementById('seq-question-am').innerHTML = `ከ${currentSeq.pivot.am} (${currentSeq.pivot.phonetic}) በኋላ የሚመጣው ቀን የትኛው ነው?`;
+
+        // Update Boxes
+        document.getElementById('seq-slot-1').innerHTML = `
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Previous</span>
+          <span class="slot-en text-sm font-extrabold text-slate-700 mt-1">${DAYS_DATA[prevIndex].en}</span>
+          <span class="slot-am text-xs font-ethiopic text-slate-500 font-bold">${DAYS_DATA[prevIndex].am}</span>
+        `;
+        document.getElementById('seq-slot-2').innerHTML = `
+          <span class="absolute -top-2.5 px-2 bg-amber-500 text-white text-[10px] font-bold rounded-full">GIVEN</span>
+          <span class="slot-en text-sm sm:text-base font-extrabold text-amber-900 mt-1">${currentSeq.pivot.en}</span>
+          <span class="slot-am text-xs font-ethiopic text-amber-700 font-bold">${currentSeq.pivot.am}</span>
+        `;
+        document.getElementById('seq-slot-3').innerHTML = `
+          <span class="text-xs font-bold uppercase tracking-wider text-rose-500">Target</span>
+          <span class="slot-en text-2xl font-black text-rose-600">?</span>
+          <span class="slot-am text-xs font-ethiopic font-bold text-rose-500">ምን ይመጣል?</span>
+        `;
+
+      } else if (chosenMode === 'before') {
+        const pivotIndex = Math.floor(Math.random() * 7);
+        const targetIndex = (pivotIndex - 1 + 7) % 7;
+        const nextIndex = (pivotIndex + 1) % 7;
+
+        currentSeq = {
+          mode: 'before',
+          pivot: DAYS_DATA[pivotIndex],
+          target: DAYS_DATA[targetIndex],
+          options: shuffleArray([
+            DAYS_DATA[targetIndex],
+            DAYS_DATA[(targetIndex + 2) % 7],
+            DAYS_DATA[(targetIndex + 3) % 7],
+            DAYS_DATA[(targetIndex + 5) % 7]
+          ])
+        };
+
+        document.getElementById('seq-mode-badge').innerText = "Which Day Comes BEFORE?";
+        document.getElementById('seq-question-en').innerHTML = `What day comes <span class="text-indigo-600 underline decoration-wavy">BEFORE</span> ${currentSeq.pivot.en}?`;
+        document.getElementById('seq-question-am').innerHTML = `ከ${currentSeq.pivot.am} (${currentSeq.pivot.phonetic}) በፊት የሚመጣው ቀን የትኛው ነው?`;
+
+        // Update Boxes
+        document.getElementById('seq-slot-1').innerHTML = `
+          <span class="text-xs font-bold uppercase tracking-wider text-indigo-600">Target</span>
+          <span class="slot-en text-2xl font-black text-indigo-600">?</span>
+          <span class="slot-am text-xs font-ethiopic font-bold text-indigo-500">ከፊት ያለው</span>
+        `;
+        document.getElementById('seq-slot-2').innerHTML = `
+          <span class="absolute -top-2.5 px-2 bg-amber-500 text-white text-[10px] font-bold rounded-full">GIVEN</span>
+          <span class="slot-en text-sm sm:text-base font-extrabold text-amber-900 mt-1">${currentSeq.pivot.en}</span>
+          <span class="slot-am text-xs font-ethiopic text-amber-700 font-bold">${currentSeq.pivot.am}</span>
+        `;
+        document.getElementById('seq-slot-3').innerHTML = `
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Next</span>
+          <span class="slot-en text-sm font-extrabold text-slate-700 mt-1">${DAYS_DATA[nextIndex].en}</span>
+          <span class="slot-am text-xs font-ethiopic text-slate-500 font-bold">${DAYS_DATA[nextIndex].am}</span>
+        `;
+
+      } else { // 'between'
+        const firstIndex = Math.floor(Math.random() * 7);
+        const targetIndex = (firstIndex + 1) % 7;
+        const lastIndex = (firstIndex + 2) % 7;
+
+        currentSeq = {
+          mode: 'between',
+          first: DAYS_DATA[firstIndex],
+          last: DAYS_DATA[lastIndex],
+          target: DAYS_DATA[targetIndex],
+          options: shuffleArray([
+            DAYS_DATA[targetIndex],
+            DAYS_DATA[(targetIndex + 2) % 7],
+            DAYS_DATA[(targetIndex + 4) % 7],
+            DAYS_DATA[(targetIndex + 5) % 7]
+          ])
+        };
+
+        document.getElementById('seq-mode-badge').innerText = "Which Day is BETWEEN?";
+        document.getElementById('seq-question-en').innerHTML = `What day is <span class="text-emerald-600 underline decoration-wavy">BETWEEN</span> ${currentSeq.first.en} and ${currentSeq.last.en}?`;
+        document.getElementById('seq-question-am').innerHTML = `በ${currentSeq.first.am} እና በ${currentSeq.last.am} መካከል የሚመጣው ቀን የትኛው ነው?`;
+
+        // Update Boxes
+        document.getElementById('seq-slot-1').innerHTML = `
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">First</span>
+          <span class="slot-en text-sm font-extrabold text-slate-700 mt-1">${currentSeq.first.en}</span>
+          <span class="slot-am text-xs font-ethiopic text-slate-500 font-bold">${currentSeq.first.am}</span>
+        `;
+        document.getElementById('seq-slot-2').innerHTML = `
+          <span class="absolute -top-2.5 px-2 bg-emerald-500 text-white text-[10px] font-bold rounded-full">BETWEEN</span>
+          <span class="slot-en text-2xl font-black text-emerald-600 mt-1">?</span>
+          <span class="slot-am text-xs font-ethiopic font-bold text-emerald-500">መካከል</span>
+        `;
+        document.getElementById('seq-slot-3').innerHTML = `
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Last</span>
+          <span class="slot-en text-sm font-extrabold text-slate-700 mt-1">${currentSeq.last.en}</span>
+          <span class="slot-am text-xs font-ethiopic text-slate-500 font-bold">${currentSeq.last.am}</span>
+        `;
+      }
+
+      // Populate Option Buttons
+      const optsContainer = document.getElementById('seq-options');
+      optsContainer.innerHTML = '';
+
+      currentSeq.options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = "py-3.5 px-4 bg-slate-50 hover:bg-indigo-50 border-2 border-slate-200 hover:border-indigo-400 rounded-2xl flex flex-col items-center justify-center transition-all bouncy-hover shadow-sm";
+        btn.innerHTML = `
+          <span class="text-base font-extrabold text-slate-800">${opt.en}</span>
+          <span class="text-xs font-ethiopic font-bold text-indigo-600">${opt.am} (${opt.phonetic})</span>
+        `;
+        btn.onclick = () => checkSequenceAnswer(opt, btn);
+        optsContainer.appendChild(btn);
+      });
+
+      // Voice prompt automatically when generated
+      readCurrentSeqQuestion();
+    }
+
+    function readCurrentSeqQuestion() {
+      if (currentSeq.mode === 'after') {
+        speakBritish(`Tell me darling, which day comes after ${currentSeq.pivot.en}? In Amharic, after ${currentSeq.pivot.phonetic}?`);
+      } else if (currentSeq.mode === 'before') {
+        speakBritish(`Can you tell me, what day comes before ${currentSeq.pivot.en}? Before ${currentSeq.pivot.phonetic}?`);
+      } else {
+        speakBritish(`Which day comes nicely between ${currentSeq.first.en} and ${currentSeq.last.en}?`);
+      }
+    }
+
+    function checkSequenceAnswer(selectedDay, buttonElement) {
+      const feedbackEl = document.getElementById('seq-feedback');
+
+      if (selectedDay.en === currentSeq.target.en) {
+        buttonElement.className = "py-3.5 px-4 bg-emerald-500 text-white border-2 border-emerald-600 rounded-2xl flex flex-col items-center justify-center shadow-md";
+        feedbackEl.innerHTML = `
+          <div class="text-emerald-700 font-bold flex items-center gap-2">
+            <i class="fa-solid fa-circle-check text-xl"></i>
+            <span>Brilliant! That is absolutely correct! (${selectedDay.en} is ${selectedDay.am})</span>
+          </div>
+        `;
+        speakBritish(`Brilliant! Splendid answer! ${currentSeq.target.en} is indeed ${currentSeq.target.am}. Have a shining star!`);
+        addStar(1);
+
+        setTimeout(() => {
+          generateSequenceQuestion();
+        }, 2200);
+      } else {
+        buttonElement.className = "py-3.5 px-4 bg-rose-50 text-rose-800 border-2 border-rose-300 rounded-2xl flex flex-col items-center justify-center";
+        feedbackEl.innerHTML = `
+          <div class="text-rose-600 font-semibold flex items-center gap-2">
+            <i class="fa-solid fa-circle-xmark text-xl"></i>
+            <span>Not quite, dear heart. Have another go!</span>
+          </div>
+        `;
+        speakBritish(`Not quite, little champion. Have another try!`);
+      }
+    }
+
+    /* -------------------------------------------------------------
+       6. SECTION 3: SPELL & BUILD THE DAY
+       ------------------------------------------------------------- */
+    let currentSpellTarget = null;
+    let selectedLetters = [];
+
+    function generateSpellingChallenge() {
+      // Pick a random day
+      currentSpellTarget = DAYS_DATA[Math.floor(Math.random() * DAYS_DATA.length)];
+      selectedLetters = [];
+
+      document.getElementById('spell-amharic-fidel').innerText = currentSpellTarget.am;
+      document.getElementById('spell-amharic-phonetic').innerText = `"${currentSpellTarget.phonetic}"`;
+      document.getElementById('spelling-msg').innerHTML = '';
+
+      renderSpellingSlots();
+      renderSpellingLetterPool();
+      speakSpellingClue();
+    }
+
+    function speakSpellingClue() {
+      speakBritish(`Let's spell the day ${currentSpellTarget.en}. In Amharic, it is ${currentSpellTarget.phonetic}. Tap the scrambled letters to spell ${currentSpellTarget.en}!`);
+    }
+
+    function renderSpellingSlots() {
+      const slotsContainer = document.getElementById('spelling-slots');
+      slotsContainer.innerHTML = '';
+
+      const targetLetters = currentSpellTarget.en.toUpperCase().split('');
+      for (let i = 0; i < targetLetters.length; i++) {
+        const slot = document.createElement('div');
+        const letter = selectedLetters[i] || '';
+        slot.className = `w-9 sm:w-11 h-12 sm:h-14 rounded-xl border-2 font-black text-lg sm:text-xl flex items-center justify-center transition-all ${
+          letter ? 'bg-indigo-600 text-white border-indigo-700 shadow-sm' : 'bg-white border-dashed border-slate-300 text-slate-300'
+        }`;
+        slot.innerText = letter;
+        slotsContainer.appendChild(slot);
+      }
+    }
+
+    function renderSpellingLetterPool() {
+      const poolContainer = document.getElementById('spelling-pool');
+      poolContainer.innerHTML = '';
+
+      // Get letters of current word + 2 trick letters
+      const letters = currentSpellTarget.en.toUpperCase().split('');
+      const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+      letters.push(alphabet[Math.floor(Math.random() * 26)]);
+      letters.push(alphabet[Math.floor(Math.random() * 26)]);
+      const shuffled = shuffleArray(letters);
+
+      shuffled.forEach((char, index) => {
+        const tile = document.createElement('button');
+        tile.className = "w-11 h-12 bg-amber-100 hover:bg-amber-200 border-2 border-amber-300 text-amber-900 rounded-xl font-black text-lg shadow-sm transition bouncy-hover";
+        tile.innerText = char;
+        tile.onclick = () => {
+          if (selectedLetters.length < currentSpellTarget.en.length) {
+            selectedLetters.push(char);
+            renderSpellingSlots();
+            // Lady Eleanor speaks the phonetic letter
+            speakBritish(char, { rate: 1.0 });
+            tile.disabled = true;
+            tile.classList.add('opacity-30', 'cursor-not-allowed');
+          }
+        };
+        poolContainer.appendChild(tile);
+      });
+    }
+
+    function clearSpellingAnswer() {
+      selectedLetters = [];
+      renderSpellingSlots();
+      renderSpellingLetterPool();
+      document.getElementById('spelling-msg').innerHTML = '';
+      speakBritish("Cleared! Let's start freshly.");
+    }
+
+    function checkSpellingAnswer() {
+      const spelledWord = selectedLetters.join('');
+      const targetWord = currentSpellTarget.en.toUpperCase();
+      const msgBox = document.getElementById('spelling-msg');
+
+      if (spelledWord === targetWord) {
+        msgBox.innerHTML = `
+          <span class="text-emerald-600 flex items-center justify-center gap-1">
+            <i class="fa-solid fa-circle-check"></i>
+            Marvelous spelling! ${currentSpellTarget.en} is ${currentSpellTarget.am}!
+          </span>
+        `;
+        speakBritish(`Marvelous! You spelled ${currentSpellTarget.en} perfectly! That is ${currentSpellTarget.phonetic} in Amharic.`);
+        addStar(2);
+        setTimeout(generateSpellingChallenge, 2400);
+      } else {
+        msgBox.innerHTML = `
+          <span class="text-rose-600 flex items-center justify-center gap-1">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            Almost there! Check the order and try again.
+          </span>
+        `;
+        speakBritish("Oh, not quite right yet my dear. Have another look and try again!");
+      }
+    }
+
+    /* -------------------------------------------------------------
+       7. SECTION 4: MASTER QUIZ (Contextual Ethiopian Days)
+       ------------------------------------------------------------- */
+    const QUIZ_BANK = [
+      {
+        tag: "BETWEEN QUESTION",
+        en: "Which day comes BETWEEN Friday and Sunday?",
+        am: "በዓርብ እና በእሑድ መካከል የሚመጣው ቀን የትኛው ነው?",
+        correct: "Saturday",
+        amCorrect: "ቅዳሜ (Qidame)",
+        options: ["Thursday", "Saturday", "Monday", "Tuesday"]
+      },
+      {
+        tag: "AFTER QUESTION",
+        en: "In Ethiopia, what day comes AFTER Tuesday (ማክሰኞ)?",
+        am: "ከማክሰኞ በኋላ የሚመጣው የትኛው ቀን ነው?",
+        correct: "Wednesday",
+        amCorrect: "ረቡዕ (Rob)",
+        options: ["Wednesday", "Friday", "Sunday", "Monday"]
+      },
+      {
+        tag: "BEFORE QUESTION",
+        en: "What day comes directly BEFORE Monday (ሰኞ)?",
+        am: "ከሰኞ በፊት የሚመጣው የሳምንቱ ቀን የትኛው ነው?",
+        correct: "Sunday",
+        amCorrect: "እሑድ (Ehud)",
+        options: ["Saturday", "Thursday", "Sunday", "Friday"]
+      },
+      {
+        tag: "BETWEEN QUESTION",
+        en: "Which day sits cozy BETWEEN Monday and Wednesday?",
+        am: "ከሰኞ እና ከረቡዕ መካከል የሚገኘው ቀን የትኛው ነው?",
+        correct: "Tuesday",
+        amCorrect: "ማክሰኞ (Maksenyo)",
+        options: ["Tuesday", "Saturday", "Friday", "Thursday"]
+      },
+      {
+        tag: "AFTER QUESTION",
+        en: "What day comes AFTER Friday (ዓርብ) when Ethiopian weekend begins?",
+        am: "የሳምንቱ መጨረሻ ሲጀምር ከዓርብ በኋላ የሚመጣው የትኛው ቀን ነው?",
+        correct: "Saturday",
+        amCorrect: "ቅዳሜ (Qidame)",
+        options: ["Saturday", "Sunday", "Tuesday", "Thursday"]
+      }
+    ];
+
+    let currentQuizIndex = 0;
+
+    function loadQuizQuestion() {
+      const q = QUIZ_BANK[currentQuizIndex];
+      document.getElementById('quiz-progress').innerText = `${currentQuizIndex + 1} / ${QUIZ_BANK.length}`;
+      document.getElementById('quiz-tag').innerText = q.tag;
+      document.getElementById('quiz-prompt-en').innerHTML = q.en;
+      document.getElementById('quiz-prompt-am').innerHTML = q.am;
+      document.getElementById('quiz-feedback-box').innerHTML = '';
+
+      const container = document.getElementById('quiz-options-container');
+      container.innerHTML = '';
+
+      q.options.forEach(optName => {
+        const dayObj = DAYS_DATA.find(d => d.en === optName);
+        const btn = document.createElement('button');
+        btn.className = "p-4 bg-slate-50 hover:bg-purple-50 border-2 border-slate-200 hover:border-purple-300 rounded-2xl flex items-center justify-between transition-all bouncy-hover";
+        btn.innerHTML = `
+          <div class="text-left">
+            <span class="block text-base font-extrabold text-slate-800">${optName}</span>
+            <span class="block text-xs font-ethiopic font-bold text-purple-700">${dayObj.am} (${dayObj.phonetic})</span>
+          </div>
+          <i class="fa-solid fa-arrow-right text-slate-300"></i>
+        `;
+        btn.onclick = () => submitQuizAnswer(optName, q.correct, btn);
+        container.appendChild(btn);
+      });
+
+      readQuizQuestion();
+    }
+
+    function readQuizQuestion() {
+      const q = QUIZ_BANK[currentQuizIndex];
+      speakBritish(`${q.en}. In Amharic, ${q.am}`);
+    }
+
+    function submitQuizAnswer(chosen, correct, btn) {
+      const feedback = document.getElementById('quiz-feedback-box');
+      if (chosen === correct) {
+        btn.className = "p-4 bg-emerald-500 text-white border-2 border-emerald-600 rounded-2xl flex items-center justify-between";
+        feedback.innerHTML = `
+          <div class="text-emerald-700 font-bold text-center">
+            🎉 Outstanding! You are an Ethiopian Days Master!
+          </div>
+        `;
+        speakBritish(`Spot on! Capital work, little star! ${chosen} is completely right.`);
+        addStar(2);
+
+        setTimeout(() => {
+          currentQuizIndex = (currentQuizIndex + 1) % QUIZ_BANK.length;
+          loadQuizQuestion();
+        }, 2200);
+      } else {
+        btn.className = "p-4 bg-rose-100 text-rose-800 border-2 border-rose-300 rounded-2xl flex items-center justify-between";
+        feedback.innerHTML = `
+          <div class="text-rose-600 font-semibold text-center">
+            Give it another thought, dear!
+          </div>
+        `;
+        speakBritish("Oh, not quite! Think carefully about the sequence, dear.");
+      }
+    }
+
+    /* -------------------------------------------------------------
+       8. UTILITY HELPER FUNCTIONS
+       ------------------------------------------------------------- */
+    function shuffleArray(array) {
+      const arr = [...array];
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    // Initialize application on page load
+    window.onload = function() {
+      initSpeechEngine();
+      renderExploreCards();
+      generateSequenceQuestion();
+      generateSpellingChallenge();
+      // Welcome voice prompt after a short delay for user touch interaction readiness
+      setTimeout(() => {
+        narrateIntroduction();
+      }, 700);
+    };
+  </script>
+</body>
+</html>
